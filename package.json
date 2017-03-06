@@ -3,15 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "colors": "^1.1.2",
+    "node-sass": "^4.5.0",
+    "npm-run-all": "^4.0.2",
     "react-scripts": "0.9.3"
   },
   "dependencies": {
+    "ejs": "^2.5.6",
+    "express": "^4.15.1",
+    "jquery": "^3.1.1",
+    "morgan": "^1.8.1",
+    "path": "^0.12.7",
+    "pizzicato": "^0.6.0",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "socket.io": "^1.7.3",
+    "web-audio-analyser": "^2.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm-run-all -p watch-css start-js",
+    "watch-css": "npm run build-css && node-sass src/ -o src/ --watch --recursive",
+    "start-js": "react-scripts start",
+    "build": "npm-run-all build-css && react-scripts build",
+    "build-css": "node-sass src/ -o src/",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
