@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import $ from 'jquery'
 
 import io from 'socket.io-client'
-const socket = io(window.location.host)
+const socket = io()
 
 class Button extends Component {
   constructor(props) {
@@ -12,17 +12,20 @@ class Button extends Component {
 
   componentDidMount() {
     $(document.body).on('keydown', this.keyHandler.bind(this))
+    socket.on(this.props.trigger, (msg) => {
+      console.log(msg)
+      this.props.sound.stop()
+      this.props.sound.play()
+      this.setState({playing: true})
+      setTimeout(() => this.setState({playing: false}),100)
+    })
   }
   componentWillUnmount() {
     $(document.body).off('keydown', this.keyHandler.bind(this))
   }
 
   clickHandler() {
-    socket.emit('testing', `event emitted, note played: ${this.props.name}`)
-    this.props.sound.stop()
-    this.props.sound.play()
-    this.setState({playing: true})
-    setTimeout(() => this.setState({playing: false}),100)
+    socket.emit('playEvent', {msg:`note played: ${this.props.name}`, payload: this.props.trigger})
   }
   keyHandler(e) {
     if (e.keyCode === this.props.trigger) this.clickHandler()
@@ -38,7 +41,7 @@ class Button extends Component {
 
     return (
       <button
-        className='btn-soundboard'
+        className='btn btn-soundboard'
         style={styling}
         onClick={this.clickHandler.bind(this)}
       >

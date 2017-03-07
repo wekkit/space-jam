@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Pizzicato from 'pizzicato'
 import $ from 'jquery'
+import io from 'socket.io-client'
+const socket = io()
 
 class Sine extends Component {
   constructor(props) {
@@ -11,7 +13,7 @@ class Sine extends Component {
         frequency: this.props.frequency
       }
     })
-    sineWave.attack = 0.3
+    sineWave.attack = 0.1
     sineWave.release = 1
     this.state = {
       playing: false,
@@ -22,9 +24,28 @@ class Sine extends Component {
 
   componentDidMount() {
     $(document.body).on('keydown', this.keyHandler.bind(this))
+    socket.on(this.props.trigger, () => {
+      this.setState({ playing: true })
+      this.state.sineWave.play()
+      setTimeout(() => {this.setState({ playing: false })}, 100)
+      setTimeout(() => {this.state.sineWave.stop()}, this.state.time)
+    })
   }
   componentWillUnmount() {
     $(document.body).off('keydown', this.keyHandler.bind(this))
+  }
+
+  clickHandler() {
+    console.log(`clicked: ${this.props.frequency}`)
+    socket.emit('playEvent', {
+      msg: `sine note played: ${this.props.frequency}`,
+      payload: this.props.trigger
+    })
+    this.state.sineWave.play()
+    setTimeout(() => {this.state.sineWave.stop()}, this.state.time)
+  }
+  keyHandler(e) {
+    if (e.keyCode === this.props.trigger) this.clickHandler()
   }
 
   changeAttackHandler(e) {
@@ -45,18 +66,6 @@ class Sine extends Component {
     this.setState({ time: e.target.value })
   }
 
-
-  clickHandler() {
-    this.setState({ playing: true })
-    this.state.sineWave.play()
-    setTimeout(() => {this.setState({ playing: false })}, 100)
-    setTimeout(() => {this.state.sineWave.stop()}, this.state.time)
-  }
-
-  keyHandler(e) {
-    if (e.keyCode === this.props.keycode) this.clickHandler()
-  }
-
   render() {
     let styling = {}
     if (this.state.playing) {
@@ -67,17 +76,17 @@ class Sine extends Component {
 
     return (
       <div className='sine'>
-        <ul>
-          <li><input onChange={this.changeAttackHandler.bind(this)} placeholder='attack'></input></li>
-          <li><input onChange={this.changeReleaseHandler.bind(this)} placeholder='release'></input></li>
-          <li><input onChange={this.changeTimeHandler.bind(this)} placeholder='hold'></input></li>
-        </ul>
+        {/*<ul>
+                  <li><input onChange={this.changeAttackHandler.bind(this)} placeholder='attack'></input></li>
+                  <li><input onChange={this.changeReleaseHandler.bind(this)} placeholder='release'></input></li>
+                  <li><input onChange={this.changeTimeHandler.bind(this)} placeholder='hold'></input></li>
+                </ul>*/}
         <button
-          className='btn-soundboard'
+          className='btn btn-sine'
           onClick={this.clickHandler.bind(this)}
           style={styling}
         >
-          {this.props.frequency + 'Hz'}
+          {this.props.name}
         </button>
       </div>
     )

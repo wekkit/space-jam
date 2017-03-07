@@ -6,8 +6,8 @@ const app = express()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 
-app.set('views', path.join(__dirname,'build'))
-app.use(express.static(path.join(__dirname,'build')))
+app.set('views', path.join(__dirname,'dist'))
+app.use(express.static(path.join(__dirname,'dist')))
 app.engine('html', require('ejs').renderFile)
 
 app.use(logger('dev'))
@@ -17,8 +17,10 @@ app.get('/', (req, res) => {
 })
 
 io.on('connect', (socket) => {
-  socket.emit('testing', 'client connected!')
-  socket.on('testing', (msg) => console.log(msg.blue))
+  socket.on('playEvent', (data) => {
+    io.emit(data.payload, data.msg)
+    console.log(data.msg.blue)
+  })
 })
 
 const port = process.env.PORT || 8080
