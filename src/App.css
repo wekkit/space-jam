@@ -2,15 +2,14 @@ html {
   width: 100vw; }
 
 body {
-  margin: 0;
+  margin: 0 20px;
   padding: 0;
   font-family: sans-serif;
   color: #333;
-  font-family: 'Harmattan', sans-serif; }
+  font-family: 'Lato', sans-serif; }
 
 h1 {
-  font-size: 64px;
-  line-height: 24px; }
+  font-size: 64px; }
 
 .app {
   width: 100vw;
@@ -67,4 +66,35 @@ h1 {
   background-color: #2c3e50; }
 
 .btn-sine:hover {
+  background-color: #34495e; }
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  text-align: center; }
+
+.login form {
+  margin: 20px; }
+
+.login input.nameInput {
+  width: 60%;
+  height: 40px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid #7f8c8d;
+  border-radius: 12px;
+  font-size: 18px; }
+
+.login input.nameInput:focus {
+  outline: none; }
+
+.login .btn-login {
+  height: 50px;
+  width: 200px;
+  background-color: #2c3e50; }
+
+.login .btn-login:hover {
   background-color: #34495e; }

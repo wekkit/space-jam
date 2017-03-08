@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import $ from 'jquery'
-
-import io from 'socket.io-client'
-const socket = io()
+import socket from '../../socket'
 
 class Button extends Component {
   constructor(props) {

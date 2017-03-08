@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import Pizzicato from 'pizzicato'
 import $ from 'jquery'
-import io from 'socket.io-client'
-const socket = io()
+import socket from '../../socket'
 
 class Sine extends Component {
   constructor(props) {

@@ -5,11 +5,10 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'public')
   },
   module: {
     loaders: [
-
       {
         exclude: [
           /\.html$/,
@@ -28,6 +27,11 @@ module.exports = {
       {
         test: /\.css$/,
         loader: "style-loader!css-loader"
+      },
+
+      {
+        test: /\.sass$/,
+        loader: "style-loader!css-loader!sass-loader"
       },
 
       {
