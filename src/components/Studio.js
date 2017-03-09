@@ -1,49 +1,75 @@
 import React, { Component } from 'react'
 import Soundboard from './soundboard/Soundboard'
-import Sine from './soundboard/Sine'
+import Synth from './soundboard/Synth'
+import SynthConfig from './soundboard/SynthConfig'
 import sounds from '../assets/sounds'
 import socket from '../socket'
+import { Link } from 'react-router'
 
 class Studio extends Component {
   constructor(props) {
     super(props)
-    this.state = { studio: undefined, user: undefined }
+    this.state = {
+      studio: null,
+      users: null,
+      sounds: sounds,
+      synth: {
+        source: 'wave',
+        attack: 0.5,
+        release: 0.5,
+        sustain: 1000,
+        options: {
+          type: 'sine'
+        }
+      }
+    }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     socket.emit('getStudioById', this.props.params.id)
     socket.on('getStudioById', data => {
-      console.log('studio data gotten via this.props.sockets', data)
       this.setState({ studio: data })
+    })
+    socket.on('getStudioUsers', users => {
+      this.setState({ users: users })
     })
   }
 
+  sustainChangeHandler(e) {
+    const newSynthSettings = JSON.parse(JSON.stringify(this.state.synth))
+    newSynthSettings.sustain = e.target.value
+    this.setState({ synth: newSynthSettings })
+  }
+
+  leaveRoomHandler() {
+    socket.emit('leaveRoom')
+  }
+
   render() {
-    if (!this.state.studio) {
-      return <div>Loading studio...</div>
+    if (!this.state.studio || !this.state.users) {
+      return <div></div>
     } else {
       return (
-        <div>
-          <p>Studio {this.state.studio.id}: {this.state.studio.name}</p>
+        <div className='studio'>
+          <h2>Studio {this.state.studio.id}: {this.state.studio.name}</h2>
+          <div className='user-list'> {'Users in room: '}
+            {this.state.users
+              .map((user) => {
+                return user.name
+              })
+              .join(', ')
+            }
+          </div>
+          {/* <Link to='/rooms'><button className='btn btn-leave' onClick={this.leaveRoomHandler}>Leave Room</button></Link>
+          <Link to='/rooms'><button className='btn btn-delete' onClick={this.leaveRoomHandler}>Delete Room</button></Link> */}
           <hr/>
-          <Soundboard sounds={sounds.percussion} />
-          <Soundboard sounds={sounds.bass} />
+          <Soundboard sounds={this.state.sounds.percussion} />
+          <Soundboard sounds={this.state.sounds.bass} />
           <hr />
-          <div className='sine-board'>
-            <Sine frequency={220} trigger={90} name={'A3'}/>
-            <Sine frequency={440} trigger={88} name={'A4'}/>
-            <Sine frequency={523} trigger={67} name={'C4'}/>
-          </div>
-          <div className='sine-board'>
-            <Sine frequency={261} trigger={86} name={'C3'}/>
-            <Sine frequency={440} trigger={66} name={'A4'}/>
-            <Sine frequency={659} trigger={78} name={'E5'}/>
-          </div>
-          <div className='sine-board'>
-            <Sine frequency={329} trigger={77} name={'E4'}/>
-            <Sine frequency={523} trigger={188} name={'C4'}/>
-            <Sine frequency={783} trigger={190} name={'G4'}/>
-          </div>
+          <SynthConfig
+            sustainChangeHandler={this.sustainChangeHandler.bind(this)}
+          />
+          <Synth config={this.state.synth}/>
         </div>
       )
     }

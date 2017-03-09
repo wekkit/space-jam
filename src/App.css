@@ -2,10 +2,11 @@ html {
   width: 100vw; }
 
 body {
-  margin: 0 20px;
+  margin: 0 20px 50px;
   padding: 0;
   font-family: sans-serif;
-  color: #333;
+  color: #f8f8f8;
+  background-color: #2c3e50;
   font-family: 'Lato', sans-serif; }
 
 h1 {
@@ -42,44 +43,36 @@ h1 {
 .btn-soundboard:hover {
   background-color: #3498db; }
 
-.visualizer {
-  background-color: grey;
-  width: 100%;
-  height: 100%; }
+.synth-config {
+  max-width: 500px;
+  margin: 20px auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+
+.synth-config h2 {
+  margin: 0; }
 
 .sine-board {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  flex-wrap: none; }
+  flex-wrap: wrap; }
 
 .sine {
-  width: 100%;
+  width: 30%;
   display: flex;
   flex-direction: row;
   justify-content: center; }
 
-.sine ul {
-  list-style: none; }
-
 .btn-sine {
-  background-color: #2c3e50; }
+  background-color: #bdc3c7; }
 
 .btn-sine:hover {
-  background-color: #34495e; }
+  background-color: #ecf0f1; }
 
-.login {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  text-align: center; }
-
-.login form {
-  margin: 20px; }
-
-.login input.nameInput {
+input.text-input {
   width: 60%;
   height: 40px;
   margin: 0 auto;
@@ -88,13 +81,75 @@ h1 {
   border-radius: 12px;
   font-size: 18px; }
 
-.login input.nameInput:focus {
+input.text-input:focus {
   outline: none; }
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  text-align: center; }
+
+.login form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px; }
+
+.login form .option-text {
+  width: 100px;
+  text-align: left;
+  margin: 0 auto; }
 
 .login .btn-login {
   height: 50px;
   width: 200px;
-  background-color: #2c3e50; }
+  background-color: #2980b9; }
 
 .login .btn-login:hover {
-  background-color: #34495e; }
+  background-color: #3498db; }
+
+.rooms .create-room {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+
+.rooms .create-room .btn-create-room {
+  margin: 10px auto;
+  width: 300px;
+  height: 80px;
+  background-color: #2980b9; }
+
+.rooms .create-room .btn-create-room:hover {
+  background-color: #3498db; }
+
+.rooms .btn-room {
+  background-color: #2980b9; }
+
+.rooms .btn-room:hover {
+  background-color: #3498db; }
+
+.rooms .tiny {
+  font-size: 12px;
+  margin: 0; }
+
+.btn-leave {
+  height: 40px;
+  width: 150px;
+  border-radius: 6px;
+  background-color: #d35400; }
+
+.btn-leave:hover {
+  background-color: #e67e22; }
+
+.btn-delete {
+  height: 40px;
+  width: 150px;
+  border-radius: 6px;
+  background-color: #c0392b; }
+
+.btn-delete:hover {
+  background-color: #e74c3c; }

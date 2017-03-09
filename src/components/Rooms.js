@@ -7,7 +7,7 @@ class Rooms extends Component {
     super(props)
     this.state = {
       studios: [],
-      newStudioName: null
+      newStudioName: ''
     }
   }
 
@@ -20,6 +20,7 @@ class Rooms extends Component {
 
   createRoomHandler() {
     socket.emit('createRoom', {name: this.state.newStudioName})
+    this.setState({ newStudioName: '' })
   }
 
   changeNameHandler(e) {
@@ -28,7 +29,7 @@ class Rooms extends Component {
 
   render() {
     return (
-      <div>
+      <div className='rooms'>
         <h1>This is a list of the rooms available:</h1>
         {this.state.studios.map((studio, index) => {
           return (
@@ -37,15 +38,19 @@ class Rooms extends Component {
               key={index}
             >
               <button
-                className='btn btn-login'
+                className='btn btn-room'
                 onClick={() => socket.emit('joinRoom', studio)}
-              >{studio.name}</button>
+              ><p className='tiny'>Studio {index + 1}:</p>{studio.name}</button>
             </Link>
           )
         })}
         <hr/>
-        <input type='text' onChange={this.changeNameHandler.bind(this)}></input>
-        {this.state.newStudioName && <button onClick={this.createRoomHandler.bind(this)}>Create a room </button>}
+        <div className='create-room'>
+          <h2>Create a room!</h2>
+          <input className='text-input' type='text' value={this.state.newStudioName} onChange={this.changeNameHandler.bind(this)}></input>
+          {this.state.newStudioName &&
+            <button className='btn btn-create-room' onClick={this.createRoomHandler.bind(this)}>Create a room </button>}
+        </div>
       </div>
     )
   }

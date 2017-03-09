@@ -28,21 +28,13 @@ io.on('connection', (socket) => {
   }).then((user) => {
     console.log('anonymous user created:'.blue, user.socketId)
   })
+
   socket.on('updateUser', (data) => {
-    console.log('user has created profile:'.blue, data.name)
+    console.log('anonymous user has created profile:'.blue, data.name)
     db.user.update(data, {
       where: { socketId: socket.id },
       returning: true,
       plain: true
-    })
-  })
-
-  socket.on('playEvent', (data) => {
-    db.user.findOne({
-      where: { socketId: socket.id }
-    }).then((user) => {
-      console.log(`${data.msg} at room ${user.jammingRoomId} by ${user.name}`.blue)
-      io.to(user.jammingRoomId).emit(data.payload, `${data.msg} at room ${user.jammingRoomId} by ${user.name}`)
     })
   })
 
@@ -79,18 +71,64 @@ io.on('connection', (socket) => {
         }).then((studio) => {
           console.log(user.name, 'joined room'.blue, room.id, ':'.blue, room.name)
           io.to(studio.id).emit('getStudioById', studio)
+          db.user.findAll({ where: { jammingRoomId: room.id }  }).then((users) => {
+            console.log(`found users in room ${room.id}: ${users}`)
+            io.to(studio.id).emit('getStudioUsers', users)
+          })
         })
       })
     })
   })
 
-  socket.once('disconnect', () => {
+  socket.on('playEvent', (data) => {
     db.user.findOne({
       where: { socketId: socket.id }
     }).then((user) => {
+      console.log(`${data.msg} at room ${user.jammingRoomId} by ${user.name}`.blue)
+      io.to(user.jammingRoomId).emit(data.payload, `${data.msg} at room ${user.jammingRoomId} by ${user.name}`.blue)
+    })
+  })
+
+  socket.on('leaveRoom', () => {
+    let roomId = null
+    db.user.findOne({ where: {socketId: socket.id} }).then((user) => {
+      roomId = user.jammingRoomId
+    })
+
+    db.user.update({
+      jammingRoomId: null
+    },{
+      where: { socketId: socket.id }
+    }).then((user) => {
+      db.user.findAll({ where: { jammingRoomId: roomId }}).then((users) => {
+        io.to(roomId).emit('getStudioUsers', users)
+      })
+      console.log(`user has left room ${roomId}`.blue)
+    })
+  })
+
+  socket.once('disconnect', () => {
+    let roomId = null
+    db.user.findOne({ where: {socketId: socket.id} }).then((user) => {
+      roomId = user.jammingRoomId
+    })
+
+    db.user.update({
+      jammingRoomId: null
+    },{
+      where: { socketId: socket.id }
+    }).then((user) => {
+      db.user.findAll({ where: { jammingRoomId: roomId }}).then((users) => {
+        io.to(roomId).emit('getStudioUsers', users)
+      })
+      console.log(`${user} has left room ${roomId}`.blue)
+    })
+
+    db.user.findOne({
+      where: { socketId: socket.id }
+    }).then((user) => {
+      console.log('user disconnected/destroyed:'.red, user.name)
       return user.destroy()
-    }).then(() => {
-      console.log('user disconnected/destroyed:'.red, socket.id)
     })
     socket.disconnect()
   })
@@ -99,4 +137,4 @@ io.on('connection', (socket) => {
 const port = process.env.PORT || 8080
 http.listen(port)
 
-console.log('SERVER UP ON PORT:'.blue, port)
+console.log('SERVER UP ON PORT:'.green, port)

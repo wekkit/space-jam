@@ -11,7 +11,6 @@ class Button extends Component {
   componentDidMount() {
     $(document.body).on('keydown', this.keyHandler.bind(this))
     socket.on(this.props.trigger, (msg) => {
-      console.log(msg)
       this.props.sound.stop()
       this.props.sound.play()
       this.setState({playing: true})

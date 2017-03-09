@@ -6,19 +6,16 @@ import socket from '../../socket'
 class Sine extends Component {
   constructor(props) {
     super(props)
-    const sineWave = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: this.props.frequency
-      }
-    })
-    sineWave.attack = 0.1
-    sineWave.release = 1
+    let sineWave = new Pizzicato.Sound(this.props.config)
     this.state = {
       playing: false,
-      time: 500,
+      time: this.props.config.sustain,
       sineWave
     }
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState({ time: newProps.config.sustain })
   }
 
   componentDidMount() {
@@ -35,9 +32,9 @@ class Sine extends Component {
   }
 
   clickHandler() {
-    console.log(`clicked: ${this.props.frequency}`)
+    // console.log(`clicked: ${this.props.config.options.frequency}`)
     socket.emit('playEvent', {
-      msg: `sine note played: ${this.props.frequency}`,
+      msg: `sine note played: ${this.props.config.options.frequency}`,
       payload: this.props.trigger
     })
     this.state.sineWave.play()
@@ -45,24 +42,6 @@ class Sine extends Component {
   }
   keyHandler(e) {
     if (e.keyCode === this.props.trigger) this.clickHandler()
-  }
-
-  changeAttackHandler(e) {
-    this.state.sineWave.stop()
-    const newSine = this.state.sineWave
-    newSine.attack = e.target.value
-    this.setState({ sineWave: newSine })
-  }
-
-  changeReleaseHandler(e) {
-    this.state.sineWave.stop()
-    const newSine = this.state.sineWave
-    newSine.release = e.target.value
-    this.setState({ sineWave: newSine })
-  }
-
-  changeTimeHandler(e) {
-    this.setState({ time: e.target.value })
   }
 
   render() {
@@ -75,11 +54,6 @@ class Sine extends Component {
 
     return (
       <div className='sine'>
-        {/*<ul>
-                  <li><input onChange={this.changeAttackHandler.bind(this)} placeholder='attack'></input></li>
-                  <li><input onChange={this.changeReleaseHandler.bind(this)} placeholder='release'></input></li>
-                  <li><input onChange={this.changeTimeHandler.bind(this)} placeholder='hold'></input></li>
-                </ul>*/}
         <button
           className='btn btn-sine'
           onClick={this.clickHandler.bind(this)}

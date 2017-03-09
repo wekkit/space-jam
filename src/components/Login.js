@@ -22,7 +22,6 @@ class Login extends Component {
   }
 
   loginHandler() {
-    console.log('sending request to update user')
     socket.emit('updateUser', {
       name: this.state.name,
       instrument: this.state.instrument,
@@ -33,12 +32,17 @@ class Login extends Component {
     return (
       <div className='login'>
         <h2>What's your name?</h2>
-        <input className='nameInput' type='text' onChange={this.nameChangeHandler.bind(this)}></input>
+        <input
+          className='text-input'
+          type='text'
+          onChange={this.nameChangeHandler.bind(this)}
+          placeholder='e.g. Chet Faker'
+        />
         <form onChange={this.instrumentChangeHandler.bind(this)} >
           <h2>What instrument are you playing?</h2>
-          <input type='radio' name='instrument' value='lead'/>Lead<br/>
-          <input type='radio' name='instrument' value='rhythm'/>Rhythm<br/>
-          <input type='radio' name='instrument' value='percussion'/>Percussion<br/>
+          <div className='option-text'><input type='radio' name='instrument' value='lead'/> Lead</div><br/>
+          <div className='option-text'><input type='radio' name='instrument' value='rhythm'/> Rhythm</div><br/>
+          <div className='option-text'><input type='radio' name='instrument' value='percussion'/> Percussion</div><br/>
         </form>
         {this.state.name && this.state.instrument &&
           <Link to='/rooms'><button className='btn btn-login' onClick={this.loginHandler.bind(this)}>Let's find a room!</button></Link>

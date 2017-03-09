@@ -3,25 +3,28 @@ import Pizzicato from 'pizzicato'
 import Button from './Button'
 
 class Soundboard extends Component {
-  render() {
+  constructor(props) {
+    super(props)
     const sounds = this.props.sounds.map(sound => {
       sound.sound = new Pizzicato.Sound(sound.sound)
       return sound
     })
-    .map(sound => {
-      return (
-        <Button
-          key={sound.name}
-          name={sound.name}
-          sound={sound.sound}
-          trigger={sound.trigger}
-        />
-      )
-    })
+    this.state = { sounds }
+  }
 
+  render() {
     return (
       <div className='soundboard'>
-        {sounds}
+        {this.state.sounds.map(sound => {
+            return (
+              <Button
+                key={sound.name}
+                name={sound.name}
+                sound={sound.sound}
+                trigger={sound.trigger}
+              />
+            )
+          })}
       </div>
     )
   }
