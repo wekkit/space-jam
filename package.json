@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "colors": "^1.1.2",
-    "node-sass": "^4.5.0",
+    "node-sass": "^7.0.0",
     "npm-run-all": "^4.0.2",
     "react-scripts": "^3.0.1",
     "webpack-livereload-plugin": "^2.2.0"
